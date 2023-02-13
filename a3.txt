@@ -7,3 +7,7 @@
 7. #b4571a == rgb(180, 87, 26)
 8. #4715ab == rgb(71, 21, 171)
 
+1. h1{style="background-color:"}    //heading background color
+2. h1{style="border:"}              //heading border color
+3. a{color:}                        //link color
+4. p{style="background-color:"}     //paragraph background color
