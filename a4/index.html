@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Slide show - js</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        #slideShow{
+                width: 505vw;
+                height: 100vh;
+                overflow: hidden;
+                margin:0;
+                padding:0;
+                transition: transform 1s;
+            }
+            #slideContainer {
+            width: 100vw;
+            height: 100vh;
+            background-color: #000;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+            .selected{
+                background-color: #000;
+                color: #fff;
+            }
+            .fade {
+            width: 100%;
+            height: 100%;
+            background-size: contain;
+            background-position: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-repeat: no-repeat;
+            transition: opacity 1s;
+        }
+            .slide{
+                width: 100vw;
+                height: 100vh;
+                position: relative;
+                background-repeat: no-repeat;
+                background-position: 50% 50%;
+                background-size: contain;
+                display: inline-block;
+                margin: 0;
+                padding: 0;
+                border:none;
+                float:left;
+            }
+        #numContainer{
+            position:fixed;
+            bottom: 10px;
+            width:80%;
+            left: 10%;
+            text-align: center;
+        }
+
+        #numContainer button{
+            border-radius: 50%;
+        }
+
+        #prev {
+            position: absolute;
+            top: calc(50% - 30px);
+            left: 10px;
+        }
+
+        #next {
+            position: absolute;
+            top: calc(50% - 30px);
+            right: 10px;
+        }
+    </style>
+</head>
+
+<body onload="start()">
+    <div id="slideContainer"></div>
+    <div id="slideShow"></div>
+    <div id="numContainer"></div>
+
+    <a class="btn-floating btn-large waves-effect waves-light black" href="javascript:goPrev()" id="prev"><i
+            class="material-icons">arrow_back</i></a>
+    <a class="btn-floating btn-large waves-effect waves-light black" href="javascript:goNext()" id="next"><i
+            class="material-icons">arrow_forward</i></a>
+
+</body>
+<script>
+    var allImages = [];
+    var transStyle;
+    function start() {
+        var hash = window.location.hash.replace('#', '');
+        allImages = hash.split(',');
+        var markup = "";
+        var buttons = "";
+        transStyle = allImages[allImages.length-1];
+        for (var i = 0; i < allImages.length-1; i++) {
+            if (transStyle == "slide") {
+                markup += "<div style='background-image: url(" + allImages[i] + ")' class='slide'></div>";
+            }
+            else {
+                markup += "<div style='background-image: url(" + allImages[i] + ")' class='fade'></div>";
+            }
+            buttons += "<button class='button' onclick='goToSlide(" + (i+1) + ")''>" + (i+1) + "</button>"
+        }
+        
+        document.getElementById('numContainer').innerHTML = buttons;
+        console.log(markup);
+        if (transStyle == "slide") {
+            document.getElementById('slideShow').innerHTML = markup;
+        }
+        else {
+            document.getElementById('slideContainer').innerHTML = markup;
+        }
+        goToSlide(1);
+    }
+
+    function goNext() {
+        if(transStyle == "slide") {
+            var current = parseInt(document.getElementById('slideShow').className);
+        }
+        else {
+            var current = parseInt(document.getElementById('slideContainer').className);
+        }
+        var next = current + 1;
+        if (next > allImages.length-1) {
+            next = 1;
+        }
+        goToSlide(next);
+    }
+    function goPrev() {
+        if(transStyle == "slide") {
+            var current = parseInt(document.getElementById('slideShow').className);
+        }
+        else {
+            var current = parseInt(document.getElementById('slideContainer').className);
+        }
+        var prev = current - 1;
+        if (prev < 1) {
+            prev = allImages.length-1;
+        }
+        goToSlide(prev);
+    }
+    function goToSlide(current) {
+        if (transStyle == "slide") {
+            document.getElementById("slideShow").style.transform = "translateX(-"+(current-1)*100+"vw)";
+            document.getElementById('slideShow').className = current;
+        }
+        else {
+            var slides = document.getElementsByClassName('fade');
+            for (var i = 0; i < slides.length; i++) {
+                if (i == current - 1) {
+                    slides[i].style.opacity = '1';
+                }
+                else {
+                    slides[i].style.opacity = '0';
+                }
+            }
+            document.getElementById('slideContainer').className = current;
+        }
+
+
+        var buttons = document.getElementsByClassName('button');
+        for (var i = 0; i < buttons.length; i++) {
+            if (i == current - 1) {
+                buttons[i].className = 'button selected';
+            }
+            else {
+                buttons[i].className = 'button';
+            }
+        }
+    }
+</script>
+
+</html>
